@@ -27,22 +27,22 @@
 
         <action
             android:id="@+id/action_permissions_to_audio"
-            app:destination="@id/audio_fragment"
+            app:destination="@id/record_fragment"
             app:popUpTo="@id/permissions_fragment"
             app:popUpToInclusive="true" />
 
     </fragment>
 
     <fragment
-        android:id="@+id/audio_fragment"
-        android:name="org.tensorflow.lite.examples.audio.fragments.AudioFragment"
-        android:label="AudioFragment" >
+        android:id="@+id/record_fragment"
+        android:name="org.tensorflow.lite.examples.audio.fragments.RecordFragment"
+        android:label="RecordFragment" >
 
 
         <action
             android:id="@+id/action_audio_to_permissions"
             app:destination="@id/permissions_fragment"
-            app:popUpTo="@id/audio_fragment"
+            app:popUpTo="@id/record_fragment"
             app:popUpToInclusive="true"/>
 
     </fragment>
