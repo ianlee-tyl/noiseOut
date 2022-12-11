@@ -19,4 +19,8 @@
         android:text="Play enhanced audio"
         tools:layout_editor_absoluteX="102dp"
         tools:layout_editor_absoluteY="307dp" />
+
+    <include
+        android:id="@+id/bottom_sheet_layout"
+        layout="@layout/controls_bottom_sheet" />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -141,106 +141,106 @@
                 android:entries="@array/overlap_spinner_titles"/>
         </RelativeLayout>
 
-        <!-- Number of max results adjustment row -->
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/margin_default"
-            android:gravity="center"
-            android:orientation="horizontal">
+<!--        &lt;!&ndash; Number of max results adjustment row &ndash;&gt;-->
+<!--        <RelativeLayout-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_margin="@dimen/margin_default"-->
+<!--            android:gravity="center"-->
+<!--            android:orientation="horizontal">-->
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/label_max_results"
-                android:layout_centerVertical="true"
-                android:textSize="@dimen/label_text_size"
-                android:textColor="@color/black" />
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
-                >
+<!--            <TextView-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:text="@string/label_max_results"-->
+<!--                android:layout_centerVertical="true"-->
+<!--                android:textSize="@dimen/label_text_size"-->
+<!--                android:textColor="@color/black" />-->
+<!--            <LinearLayout-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_alignParentRight="true"-->
+<!--                android:gravity="center_vertical"-->
+<!--                android:orientation="horizontal"-->
+<!--                >-->
 
-                <androidx.appcompat.widget.AppCompatImageButton
-                    android:id="@+id/results_minus"
-                    android:layout_width="@dimen/control_btn_size"
-                    android:layout_height="@dimen/control_btn_size"
-                    android:contentDescription=""
-                    android:src="@drawable/ic_minus" />
+<!--                <androidx.appcompat.widget.AppCompatImageButton-->
+<!--                    android:id="@+id/results_minus"-->
+<!--                    android:layout_width="@dimen/control_btn_size"-->
+<!--                    android:layout_height="@dimen/control_btn_size"-->
+<!--                    android:contentDescription=""-->
+<!--                    android:src="@drawable/ic_minus" />-->
 
-                <TextView
-                    android:id="@+id/results_value"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/margin_default"
-                    android:gravity="center"
-                    android:minEms="3"
-                    android:text="2"
-                    android:textColor="@color/black"
-                    android:textSize="@dimen/label_text_size" />
+<!--                <TextView-->
+<!--                    android:id="@+id/results_value"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_margin="@dimen/margin_default"-->
+<!--                    android:gravity="center"-->
+<!--                    android:minEms="3"-->
+<!--                    android:text="2"-->
+<!--                    android:textColor="@color/black"-->
+<!--                    android:textSize="@dimen/label_text_size" />-->
 
-                <androidx.appcompat.widget.AppCompatImageButton
-                    android:id="@+id/results_plus"
-                    android:layout_width="@dimen/control_btn_size"
-                    android:layout_height="@dimen/control_btn_size"
-                    android:contentDescription=""
-                    android:src="@drawable/ic_plus"  />
-            </LinearLayout>
-        </RelativeLayout>
+<!--                <androidx.appcompat.widget.AppCompatImageButton-->
+<!--                    android:id="@+id/results_plus"-->
+<!--                    android:layout_width="@dimen/control_btn_size"-->
+<!--                    android:layout_height="@dimen/control_btn_size"-->
+<!--                    android:contentDescription=""-->
+<!--                    android:src="@drawable/ic_plus"  />-->
+<!--            </LinearLayout>-->
+<!--        </RelativeLayout>-->
 
-        <!-- ML confidence threshold adjustment row -->
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/margin_default"
-            android:gravity="center"
-            android:orientation="horizontal">
+<!--        &lt;!&ndash; ML confidence threshold adjustment row &ndash;&gt;-->
+<!--        <RelativeLayout-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_margin="@dimen/margin_default"-->
+<!--            android:gravity="center"-->
+<!--            android:orientation="horizontal">-->
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/label_confidence_threshold"
-                android:layout_centerVertical="true"
-                android:textSize="@dimen/label_text_size"
-                android:textColor="@color/black" />
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
-                >
+<!--            <TextView-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:text="@string/label_confidence_threshold"-->
+<!--                android:layout_centerVertical="true"-->
+<!--                android:textSize="@dimen/label_text_size"-->
+<!--                android:textColor="@color/black" />-->
+<!--            <LinearLayout-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_alignParentRight="true"-->
+<!--                android:gravity="center_vertical"-->
+<!--                android:orientation="horizontal"-->
+<!--                >-->
 
-                <androidx.appcompat.widget.AppCompatImageButton
-                    android:id="@+id/threshold_minus"
-                    android:layout_width="@dimen/control_btn_size"
-                    android:layout_height="@dimen/control_btn_size"
-                    android:contentDescription="@string/alt_threshold_button_minus"
-                    android:src="@drawable/ic_minus" />
+<!--                <androidx.appcompat.widget.AppCompatImageButton-->
+<!--                    android:id="@+id/threshold_minus"-->
+<!--                    android:layout_width="@dimen/control_btn_size"-->
+<!--                    android:layout_height="@dimen/control_btn_size"-->
+<!--                    android:contentDescription="@string/alt_threshold_button_minus"-->
+<!--                    android:src="@drawable/ic_minus" />-->
 
-                <TextView
-                    android:id="@+id/threshold_value"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/margin_default"
-                    android:layout_marginRight="@dimen/margin_default"
-                    android:gravity="center"
-                    android:minEms="3"
-                    android:text="0.30"
-                    android:textColor="@color/black"
-                    android:textSize="@dimen/label_text_size" />
+<!--                <TextView-->
+<!--                    android:id="@+id/threshold_value"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_marginLeft="@dimen/margin_default"-->
+<!--                    android:layout_marginRight="@dimen/margin_default"-->
+<!--                    android:gravity="center"-->
+<!--                    android:minEms="3"-->
+<!--                    android:text="0.30"-->
+<!--                    android:textColor="@color/black"-->
+<!--                    android:textSize="@dimen/label_text_size" />-->
 
-                <androidx.appcompat.widget.AppCompatImageButton
-                    android:id="@+id/threshold_plus"
-                    android:layout_width="@dimen/control_btn_size"
-                    android:layout_height="@dimen/control_btn_size"
-                    android:contentDescription="@string/alt_threshold_button_plus"
-                    android:src="@drawable/ic_plus"  />
-            </LinearLayout>
-        </RelativeLayout>
+<!--                <androidx.appcompat.widget.AppCompatImageButton-->
+<!--                    android:id="@+id/threshold_plus"-->
+<!--                    android:layout_width="@dimen/control_btn_size"-->
+<!--                    android:layout_height="@dimen/control_btn_size"-->
+<!--                    android:contentDescription="@string/alt_threshold_button_plus"-->
+<!--                    android:src="@drawable/ic_plus"  />-->
+<!--            </LinearLayout>-->
+<!--        </RelativeLayout>-->
 
         <!-- Number of threads adjustment row -->
         <RelativeLayout
