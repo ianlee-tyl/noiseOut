@@ -16,17 +16,24 @@
 
 package org.tensorflow.lite.examples.audio.fragments
 
+//import android.widget.RadioGroup
+//import androidx.navigation.Navigation
+import android.media.MediaRecorder
+import android.os.Build
 import android.os.Bundle
+import android.os.Environment
+import android.util.Log
+import android.view.ContextMenu
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import org.tensorflow.lite.examples.audio.databinding.FragmentRecordBinding
-
-//import android.widget.RadioGroup
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
-//import androidx.navigation.Navigation
+import kotlinx.android.synthetic.main.fragment_record.recordButton
+import kotlinx.android.synthetic.main.fragment_record.playButton
 import org.tensorflow.lite.examples.audio.AudioDenoiseHelper
+import org.tensorflow.lite.examples.audio.databinding.FragmentRecordBinding
 //import org.tensorflow.lite.examples.audio.R
 
 interface AudioDenoiseListener {
@@ -36,9 +43,13 @@ interface AudioDenoiseListener {
 
 class RecordFragment : Fragment() {
     private var _fragmentBinding: FragmentRecordBinding? = null
+    private var startRecording: Boolean = true
     private val fragmentRecordBinding get() = _fragmentBinding!!
+    private var recorder: MediaRecorder? = null
+    private var fileName: String = ""
 
     private lateinit var denoiseHelper: AudioDenoiseHelper
+    private val LOG_TAG : String = "record fragment"
 
     private val audioDenoiseListener = object : AudioDenoiseListener {
         override fun onResult(inferenceTime: Long) {
@@ -58,18 +69,52 @@ class RecordFragment : Fragment() {
     override fun onCreateView(
       inflater: LayoutInflater,
       container: ViewGroup?,
-      savedInstanceState: Bundle?
+      savedInstsanceState: Bundle?
     ): View {
         _fragmentBinding = FragmentRecordBinding.inflate(inflater, container, false)
+
+        fileName = "${Environment.getExternalStorageDirectory().path}/audiorecordtest.3gp"
+        Log.i(LOG_TAG, fileName)
+
         return fragmentRecordBinding.root
     }
 
+    @RequiresApi(Build.VERSION_CODES.S)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         denoiseHelper = AudioDenoiseHelper(
             requireContext(),
             audioDenoiseListener
         )
+
+        recordButton.setOnClickListener {
+            if (startRecording) {
+                recorder = MediaRecorder(it.context).apply {
+                    setAudioSource(MediaRecorder.AudioSource.MIC)
+                    setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP)
+                    setOutputFile(fileName)
+                    setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB)
+
+                    try {
+                        prepare()
+                    } catch (e: Exception) {
+                        Log.e(LOG_TAG, "prepare() failed")
+                    }
+                    start()
+                }
+            } else {
+                recorder?.apply {
+                    stop()
+                    release()
+                }
+                recorder = null
+            }
+            startRecording = !startRecording
+        }
+
+        playButton.setOnClickListener {
+            it.id
+        }
 
         // Allow the user to select between multiple supported audio models.
         // DELETED
