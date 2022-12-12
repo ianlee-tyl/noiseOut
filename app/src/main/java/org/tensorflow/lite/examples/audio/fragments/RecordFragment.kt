@@ -18,12 +18,14 @@ package org.tensorflow.lite.examples.audio.fragments
 
 //import android.widget.RadioGroup
 //import androidx.navigation.Navigation
+import android.annotation.SuppressLint
+import android.media.AudioFormat
+import android.media.AudioRecord
+import android.media.MediaPlayer
 import android.media.MediaRecorder
 import android.os.Build
 import android.os.Bundle
-import android.os.Environment
 import android.util.Log
-import android.view.ContextMenu
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -32,9 +34,17 @@ import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import kotlinx.android.synthetic.main.fragment_record.recordButton
 import kotlinx.android.synthetic.main.fragment_record.playButton
+import org.tensorflow.lite.InterpreterApi
 import org.tensorflow.lite.examples.audio.AudioDenoiseHelper
 import org.tensorflow.lite.examples.audio.databinding.FragmentRecordBinding
-//import org.tensorflow.lite.examples.audio.R
+
+import org.tensorflow.lite.Interpreter
+import org.tensorflow.lite.Tensor
+import org.tensorflow.lite.examples.audio.ml.TfModel10s
+import org.tensorflow.lite.support.audio.TensorAudio
+import org.tensorflow.lite.support.audio.TensorAudio.TensorAudioFormat
+import java.io.File
+
 
 interface AudioDenoiseListener {
     fun onError(error: String)
@@ -45,8 +55,15 @@ class RecordFragment : Fragment() {
     private var _fragmentBinding: FragmentRecordBinding? = null
     private var startRecording: Boolean = true
     private val fragmentRecordBinding get() = _fragmentBinding!!
-    private var recorder: MediaRecorder? = null
-    private var fileName: String = ""
+    private var recorder: AudioRecord? = null
+    private var player: MediaPlayer? = null
+    private var startPlaying: Boolean = true
+//    private var fileName: String = ""
+    private var model: TfModel10s? = null
+
+    private val maxAudioSamples: Int = 16000 * 60
+    private val frameSamples: Int = 16 * 40
+    private val modelSamples: Int = 160085
 
     private lateinit var denoiseHelper: AudioDenoiseHelper
     private val LOG_TAG : String = "record fragment"
@@ -73,12 +90,10 @@ class RecordFragment : Fragment() {
     ): View {
         _fragmentBinding = FragmentRecordBinding.inflate(inflater, container, false)
 
-        fileName = "${Environment.getExternalStorageDirectory().path}/audiorecordtest.3gp"
-        Log.i(LOG_TAG, fileName)
-
         return fragmentRecordBinding.root
     }
 
+    @SuppressLint("MissingPermission")
     @RequiresApi(Build.VERSION_CODES.S)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -87,33 +102,67 @@ class RecordFragment : Fragment() {
             audioDenoiseListener
         )
 
+        model = TfModel10s.newInstance(requireContext())
+
+//        fileName = "${requireContext().externalCacheDir?.path}/audiorecordtest.3gp"
+//        Log.i(LOG_TAG, fileName)
+
         recordButton.setOnClickListener {
             if (startRecording) {
-                recorder = MediaRecorder(it.context).apply {
-                    setAudioSource(MediaRecorder.AudioSource.MIC)
-                    setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP)
-                    setOutputFile(fileName)
-                    setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB)
-
-                    try {
-                        prepare()
-                    } catch (e: Exception) {
-                        Log.e(LOG_TAG, "prepare() failed")
-                    }
-                    start()
-                }
+                recorder = AudioRecord(
+                    MediaRecorder.AudioSource.DEFAULT,
+                    16000,
+                    AudioFormat.CHANNEL_IN_MONO,
+                    AudioFormat.ENCODING_PCM_FLOAT,
+                    4 * maxAudioSamples,
+                )
+                recorder?.startRecording()
+//                recorder = MediaRecorder(it.context).apply {
+//                    setAudioSource(MediaRecorder.AudioSource.MIC)
+//                    setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP)
+//                    setOutputFile(fileName)
+//                    setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB)
+//
+//                    prepare()
+//                    start()
+//                }
             } else {
-                recorder?.apply {
-                    stop()
-                    release()
-                }
-                recorder = null
+                Log.i(LOG_TAG, "finish recording")
+                recorder?.stop()
             }
             startRecording = !startRecording
         }
 
         playButton.setOnClickListener {
-            it.id
+            if (startPlaying) {
+                // process the audio
+//                val audioData = FloatArray(maxAudioSamples)
+//                val readState: Int? = recorder?.read(audioData, 0, maxAudioSamples, AudioRecord.READ_NON_BLOCKING)
+//                readState?.toString()?.let { it1 -> Log.i(LOG_TAG, it1) }
+//                for(idx in 0 until (maxAudioSamples/frameSamples)){
+//                }
+                val tfAudioFormat = TensorAudioFormat.builder().apply {
+                    setChannels(1)
+                    setSampleRate(16000)
+                }
+                val tensor = TensorAudio.create(tfAudioFormat.build(), modelSamples)
+                tensor.load(recorder)
+
+                val outputTensor = model!!.process(tensor.tensorBuffer).outputFeature0AsTensorBuffer
+//                val outputTensor = TensorAudio.create(tfAudioFormat.build(), modelSamples)
+//                interpreter!!.run(tensor, outputTensor)
+                Log.i(LOG_TAG, "finish processing audio")
+                // play the audio
+
+                Log.i(LOG_TAG, outputTensor.floatArray.sum().toString())
+
+                // release and remove recorder
+                recorder?.release()
+                recorder = null
+            } else {
+
+            }
+            startPlaying = !startPlaying
         }
 
         // Allow the user to select between multiple supported audio models.

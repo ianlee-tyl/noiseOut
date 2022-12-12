@@ -27,6 +27,7 @@ android {
 
     buildFeatures {
         viewBinding true
+        mlModelBinding true
     }
     androidResources {
         noCompress 'tflite'
@@ -82,4 +83,7 @@ dependencies {
     androidTestImplementation "androidx.test.espresso:espresso-core:3.4.0"
 
     implementation 'org.tensorflow:tensorflow-lite-task-audio:0.4.0'
+//    implementation 'org.tensorflow:tensorflow-lite-support:0.1.0'
+    implementation 'org.tensorflow:tensorflow-lite-metadata:0.1.0'
+    implementation 'org.tensorflow:tensorflow-lite:+'
 }
