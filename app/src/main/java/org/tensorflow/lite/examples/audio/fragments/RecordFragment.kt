@@ -16,15 +16,11 @@
 
 package org.tensorflow.lite.examples.audio.fragments
 
-//import android.widget.RadioGroup
-//import androidx.navigation.Navigation
 import android.annotation.SuppressLint
-import android.media.AudioFormat
-import android.media.AudioRecord
-import android.media.MediaPlayer
-import android.media.MediaRecorder
+import android.media.*
 import android.os.Build
 import android.os.Bundle
+import android.os.SystemClock
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -34,16 +30,13 @@ import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import kotlinx.android.synthetic.main.fragment_record.recordButton
 import kotlinx.android.synthetic.main.fragment_record.playButton
-import org.tensorflow.lite.InterpreterApi
+
 import org.tensorflow.lite.examples.audio.AudioDenoiseHelper
 import org.tensorflow.lite.examples.audio.databinding.FragmentRecordBinding
-
-import org.tensorflow.lite.Interpreter
-import org.tensorflow.lite.Tensor
 import org.tensorflow.lite.examples.audio.ml.TfModel10s
+//import org.tensorflow.lite.examples.audio.ml.Pruned
 import org.tensorflow.lite.support.audio.TensorAudio
 import org.tensorflow.lite.support.audio.TensorAudio.TensorAudioFormat
-import java.io.File
 
 
 interface AudioDenoiseListener {
@@ -56,7 +49,7 @@ class RecordFragment : Fragment() {
     private var startRecording: Boolean = true
     private val fragmentRecordBinding get() = _fragmentBinding!!
     private var recorder: AudioRecord? = null
-    private var player: MediaPlayer? = null
+    private var player: AudioTrack? = null
     private var startPlaying: Boolean = true
 //    private var fileName: String = ""
     private var model: TfModel10s? = null
@@ -104,9 +97,6 @@ class RecordFragment : Fragment() {
 
         model = TfModel10s.newInstance(requireContext())
 
-//        fileName = "${requireContext().externalCacheDir?.path}/audiorecordtest.3gp"
-//        Log.i(LOG_TAG, fileName)
-
         recordButton.setOnClickListener {
             if (startRecording) {
                 recorder = AudioRecord(
@@ -117,15 +107,6 @@ class RecordFragment : Fragment() {
                     4 * maxAudioSamples,
                 )
                 recorder?.startRecording()
-//                recorder = MediaRecorder(it.context).apply {
-//                    setAudioSource(MediaRecorder.AudioSource.MIC)
-//                    setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP)
-//                    setOutputFile(fileName)
-//                    setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB)
-//
-//                    prepare()
-//                    start()
-//                }
             } else {
                 Log.i(LOG_TAG, "finish recording")
                 recorder?.stop()
@@ -135,32 +116,45 @@ class RecordFragment : Fragment() {
 
         playButton.setOnClickListener {
             if (startPlaying) {
-                // process the audio
-//                val audioData = FloatArray(maxAudioSamples)
-//                val readState: Int? = recorder?.read(audioData, 0, maxAudioSamples, AudioRecord.READ_NON_BLOCKING)
-//                readState?.toString()?.let { it1 -> Log.i(LOG_TAG, it1) }
-//                for(idx in 0 until (maxAudioSamples/frameSamples)){
-//                }
                 val tfAudioFormat = TensorAudioFormat.builder().apply {
                     setChannels(1)
                     setSampleRate(16000)
                 }
                 val tensor = TensorAudio.create(tfAudioFormat.build(), modelSamples)
+
+                var inferenceTime = SystemClock.uptimeMillis()
                 tensor.load(recorder)
-
                 val outputTensor = model!!.process(tensor.tensorBuffer).outputFeature0AsTensorBuffer
-//                val outputTensor = TensorAudio.create(tfAudioFormat.build(), modelSamples)
-//                interpreter!!.run(tensor, outputTensor)
+                inferenceTime = SystemClock.uptimeMillis() - inferenceTime
+                audioDenoiseListener.onResult(inferenceTime)
                 Log.i(LOG_TAG, "finish processing audio")
-                // play the audio
 
+
+                // play the audio
                 Log.i(LOG_TAG, outputTensor.floatArray.sum().toString())
+                player = AudioTrack.Builder()
+                    .setAudioAttributes(AudioAttributes.Builder()
+                        .setUsage(AudioAttributes.USAGE_MEDIA)
+                        .setContentType(AudioAttributes.CONTENT_TYPE_SPEECH)
+                        .build())
+                    .setAudioFormat(AudioFormat.Builder()
+                        .setSampleRate(16000)
+                        .setEncoding(AudioFormat.ENCODING_PCM_FLOAT)
+                        .setChannelMask(AudioFormat.CHANNEL_OUT_MONO)
+                        .build())
+                    .setBufferSizeInBytes(4 * maxAudioSamples)
+                    .setTransferMode(AudioTrack.MODE_STATIC)
+                    .build()
+                player?.write(outputTensor.floatArray, 0, modelSamples, AudioTrack.WRITE_NON_BLOCKING)
+                player!!.play()
 
                 // release and remove recorder
                 recorder?.release()
                 recorder = null
             } else {
-
+                player?.pause()
+                player?.release()
+                player = null
             }
             startPlaying = !startPlaying
         }
