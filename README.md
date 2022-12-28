@@ -1,22 +1,9 @@
-# TensorFlow Lite Audio Classification Android Demo
+# NoiseOut
 
-### Overview
+## Overview
+NoiseOut is an optimized version of Facebook AI's denoiser [here](https://github.com/facebookresearch/denoiser), which is deployed on labtop CPU for real-time speech enhancement and noise filtering. We focused on improving storage size of the model to enable mobile speech enhancement.
 
-This sample will record audio on a physical Android device and attempt to
-classify those recordings. The supported classification models include
-[YAMNET](https://tfhub.dev/google/lite-model/yamnet/classification/tflite/1) and
-a custom speech command model trained using
-[TensorFlow's Model Maker](https://www.tensorflow.org/lite/models/modify/model_maker/speech_recognition).
-These instructions walk you through building and running the demo on an Android
-device.
-
-The model files are downloaded via Gradle scripts when you build and run the
-app. You don't need to do any steps to download TFLite models into the project
-explicitly.
-
-This application should be run on a physical Android device.
-
-## Build the demo using Android Studio
+## Build the demo with Android Studio
 
 ### Prerequisites
 
