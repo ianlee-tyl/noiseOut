@@ -3,6 +3,8 @@
 ## Overview
 NoiseOut is an optimized version of Facebook AI's denoiser [here](https://github.com/facebookresearch/denoiser), which is deployed on labtop CPU for real-time speech enhancement and noise filtering. We focused on improving storage size of the model to enable mobile speech enhancement.
 
+![alt text](./paper.png)
+
 ## Build the demo with Android Studio
 
 ### Prerequisites
