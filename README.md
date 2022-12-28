@@ -1,7 +1,7 @@
 # NoiseOut
 
 ## Overview
-NoiseOut is an optimized version of Facebook AI's denoiser [here](https://github.com/facebookresearch/denoiser), which is deployed on labtop CPU for real-time speech enhancement and noise filtering. We focused on improving storage size of the model to enable mobile speech enhancement.
+NoiseOut is an optimized version of Facebook AI's denoiser [here](https://github.com/facebookresearch/denoiser), which is deployed on labtop CPU for real-time speech enhancement and noise filtering. We focused on improving storage size of the model to enable mobile speech enhancement. More details in `tinyml_final_paper.pdf`.
 
 ![alt text](./paper.png)
 
